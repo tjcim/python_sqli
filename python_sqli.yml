@@ -1,0 +1,45 @@
+---
+- hosts: all
+  vars:
+    app_dir: "/vagrant"
+    working_dir: "/home/vagrant"
+  tasks:
+    - name: update box
+      apt:
+        update_cache: True
+      become: True
+
+    - name: Install global python packages
+      apt:
+        pkg:
+          - python3
+          - python3-venv
+          - python-setuptools
+      become: True
+
+    - name: Create virtualenv and install dependencies
+      pip:
+        requirements: "{{ app_dir }}/requirements.txt"
+        virtualenv: "{{ working_dir }}/env"
+        virtualenv_command: "/usr/bin/python3 -m venv"
+
+    - name: Create systemd file
+      copy:
+        src: python.sqli.service
+        dest: /etc/systemd/system/python.sqli.service
+      become: True
+
+    - name: Reload system files, enable and start website
+      systemd:
+        name: python.sqli.service
+        state: started
+        enabled: True
+        daemon_reload: True
+      become: True
+
+    - name: Activate virtualenv automatically for vagrant user
+      lineinfile:
+        dest: /home/vagrant/.bashrc
+        line: 'source env/bin/activate'
+
+    - include_tasks: mysql_install.yml

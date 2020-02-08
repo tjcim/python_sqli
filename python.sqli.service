@@ -1,0 +1,13 @@
+[Unit]
+Description=SQLi web application
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/vagrant/app
+Environment=FLASK_APP=/vagrant/app/sqli.py
+ExecStart=/home/vagrant/env/bin/flask run --host=0.0.0.0
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

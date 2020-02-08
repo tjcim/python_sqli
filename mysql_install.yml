@@ -1,0 +1,144 @@
+# MySQL Server
+---
+- name: Install MySQL
+  block:
+    - name: Update apt cache
+      apt:
+        update_cache: True
+
+    - name: Ensure MySQL Python libraries are installed.
+      apt:
+        name: "python-pymysql"
+        state: present
+
+    - name: Ensure MySQL packages are installed.
+      apt:
+        pkg:
+          - "mysql-common"
+          - "mysql-server"
+        state: present
+
+    # Because Ubuntu starts MySQL as part of the install process, we need to stop
+    # mysql and remove the logfiles in case the user set a custom log file size.
+    - name: Ensure MySQL is stopped after initial install.
+      service:
+        name: mysql
+        state: stopped
+
+    - name: Delete innodb log files created by apt package after initial install.
+      file:
+        path: "/var/lib/mysql/{{ item }}"
+        state: absent
+      with_items:
+        - ib_logfile0
+        - ib_logfile1
+
+    - name: Copy my.cnf global MySQL configuration.
+      template:
+        src: my.cnf
+        dest: "/etc/mysql/my.cnf"
+        owner: root
+        group: root
+        mode: 0644
+        force: True
+
+    - name: Verify mysql include directory exists.
+      file:
+        path: "/etc/mysql/conf.d"
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: Create datadir if it does not exist
+      file:
+        path: "/var/lib/mysql"
+        state: directory
+        owner: mysql
+        group: mysql
+        mode: 0755
+        setype: mysqld_db_t
+
+    - name: Create error log file (if configured).
+      command: "touch /var/log/mysql/mysql.err"
+      args:
+        creates: "/var/log/mysql/mysql.err"
+        warn: false
+
+    - name: Set ownership on error log file (if configured).
+      file:
+        path: "/var/log/mysql/mysql.err"
+        state: file
+        owner: mysql
+        group: "mysql"
+        mode: 0640
+
+    - name: Ensure MySQL is started and enabled on boot.
+      service:
+        name: mysql
+        state: started
+        enabled: True
+      register: mysql_service_configuration
+
+    # Set root password for MySQL >= 5.7.x.
+    - name: Update MySQL root password for localhost root account (5.7.x).
+      shell: >
+        mysql -u root -NBe
+        'ALTER USER "root"@"localhost"
+        IDENTIFIED WITH mysql_native_password BY "vagrant";'
+
+    # Has to be after the root password assignment, for idempotency.
+    - name: Copy .my.cnf file with root password credentials.
+      template:
+        src: "root-my.cnf"
+        dest: "/root/.my.cnf"
+        owner: root
+        group: root
+        mode: 0600
+
+    - name: Get list of hosts for the anonymous user.
+      command: mysql -NBe 'SELECT Host FROM mysql.user WHERE User = ""'
+      register: mysql_anonymous_hosts
+      changed_when: false
+      check_mode: false
+
+    - name: Remove anonymous MySQL users.
+      mysql_user:
+        name: ""
+        host: "{{ item }}"
+        state: absent
+      with_items: "{{ mysql_anonymous_hosts.stdout_lines|default([]) }}"
+
+    - name: Remove MySQL test database.
+      mysql_db: "name='test' state=absent"
+
+    - name: Ensure MySQL database is present.
+      mysql_db:
+        name: "python_sqli"
+        collation: "utf8_general_ci"
+        encoding: "utf8"
+        state: "present"
+
+    - name: Add vagrant user
+      mysql_user:
+        name: "vagrant"
+        host: "localhost"
+        password: "vagrant"
+        priv: "*.*:ALL"
+        state: "present"
+
+    - name: Copy .my.cnf file with vagrant user password credentials.
+      template:
+        src: "vagrant-my.cnf"
+        dest: "/home/vagrant/.my.cnf"
+        owner: vagrant
+        group: vagrant
+        mode: 0600
+
+    - name: Import dump.sql file
+      mysql_db:
+        state: import
+        name: "python_sqli"
+        target: /vagrant/dump.sql
+
+  become: True

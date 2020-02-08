@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+<h1>SQL Injection Exploit Practice</h1>
+<h2>MySQL</h2>
+<ul>
+  <li>Time-based: <a href="{{ url_for('mysql_time') }}">Here</a></li>
+  <li>Boolean-based: <a href="{{ url_for('mysql_boolean') }}">Here</a></li>
+</ul>
+<h2>PostgreSQL</h2>
+<ul>
+  <li>Time-based: <a href="{{ url_for('psql_time') }}">Here</a></li>
+  <li>Boolean-based: <a href="{{ url_for('psql_boolean') }}">Here</a></li>
+</ul>
+{% endblock %}
