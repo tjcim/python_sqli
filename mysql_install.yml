@@ -8,7 +8,9 @@
 
     - name: Ensure MySQL Python libraries are installed.
       apt:
-        name: "python-pymysql"
+        pkg:
+          - "python-pymysql"
+          - "python3-pymysql"
         state: present
 
     - name: Ensure MySQL packages are installed.
