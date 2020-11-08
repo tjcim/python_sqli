@@ -6,8 +6,8 @@
   tasks:
     - name: update box
       apt:
-        update_cache: True
-      become: True
+        update_cache: true
+      become: true
 
     - name: Install global python packages
       apt:
@@ -15,7 +15,7 @@
           - python3
           - python3-venv
           - python-setuptools
-      become: True
+      become: true
 
     - name: Create virtualenv and install dependencies
       pip:
@@ -27,15 +27,15 @@
       copy:
         src: python.sqli.service
         dest: /etc/systemd/system/python.sqli.service
-      become: True
+      become: true
 
     - name: Reload system files, enable and start website
       systemd:
         name: python.sqli.service
         state: started
-        enabled: True
-        daemon_reload: True
-      become: True
+        enabled: true
+        daemon_reload: true
+      become: true
 
     - name: Activate virtualenv automatically for vagrant user
       lineinfile:

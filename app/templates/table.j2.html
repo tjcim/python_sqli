@@ -1,0 +1,49 @@
+{% extends "base.j2.html" %}
+
+{% block content %}
+<div class="row">
+  <main class="col-12">
+    <h1 class="my-2">{{ title }}</h1>
+    <form class="" action="" method="post" novalidate>
+      <div class="form-row">
+        <div class="col-11">
+          <input class="form-control" name="search" type="text" placeholder="Search" value="{{ search_value }}">
+        </div>
+        <div class="col-1">
+          <button class="btn btn-primary mb-2" name="submit" class="">Search</button>
+        </div>
+      </div>
+    </form>
+    <table class="table m-2 pt-2">
+      <thead>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">First</th>
+          <th scope="col">Last</th>
+          <th scope="col">Email</th>
+          <th scope="col">IP Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in data %}
+        <tr>
+          <th scope="row">{{ user.id }}</th>
+          <td>{{ user.first_name }}</td>
+          <td>{{ user.last_name }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.ip_address }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p>Records Returned: {{ record_count }}</p>
+    <hr class="mt-5" />
+    <div class="p-4" style="background-color: #eee;">
+      <p><b>Query Run:</b><br /> <span style="font-size: .8rem;">{{ query }}</span></p>
+      <p style="color: red">
+        {{ error }}
+      </p>
+    </div>
+  </main>
+</div>
+{% endblock content %}

@@ -4,7 +4,7 @@
   block:
     - name: Update apt cache
       apt:
-        update_cache: True
+        update_cache: true
 
     - name: Ensure MySQL Python libraries are installed.
       apt:
@@ -42,7 +42,7 @@
         owner: root
         group: root
         mode: 0644
-        force: True
+        force: true
 
     - name: Verify mysql include directory exists.
       file:
@@ -79,7 +79,7 @@
       service:
         name: mysql
         state: started
-        enabled: True
+        enabled: true
       register: mysql_service_configuration
 
     # Set root password for MySQL >= 5.7.x.
@@ -141,6 +141,6 @@
       mysql_db:
         state: import
         name: "python_sqli"
-        target: /vagrant/dump.sql
+        target: /vagrant/provisioning/dump.sql
 
-  become: True
+  become: true

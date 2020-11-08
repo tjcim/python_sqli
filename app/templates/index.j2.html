@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.j2.html" %}
 
 {% block title %}{{ title }}{% endblock %}
 
@@ -6,6 +6,7 @@
 <h1>SQL Injection Exploit Practice</h1>
 <h2>MySQL</h2>
 <ul>
+  <li>SQLi: <a href="{{ url_for('mysql_sqli') }}">Here</a></li>
   <li>Time-based: <a href="{{ url_for('mysql_time') }}">Here</a></li>
   <li>Boolean-based: <a href="{{ url_for('mysql_boolean') }}">Here</a></li>
 </ul>

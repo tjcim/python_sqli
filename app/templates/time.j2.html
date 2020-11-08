@@ -1,0 +1,32 @@
+{% extends "base.j2.html" %} {% block content %}
+<div class="row">
+  <main class="col-12">
+    <h1 class="my-2">{{ title }}</h1>
+    <hr>
+    <form class="" action="" method="post" novalidate>
+      <div class="form-row">
+        <p>Please enter your email in order to be considered. (A valid email address is pdurkin0@wikimedia.org)</p>
+        <div class="col-11">
+          <input class="form-control" name="search" type="text" placeholder="Email" value="{{ search_value }}" />
+        </div>
+        <div class="col-1">
+          <button class="btn btn-primary mb-2" name="submit" class="">
+            Submit
+          </button>
+        </div>
+      </div>
+    </form>
+    </hr>
+    {% if success %}
+    <p>Thanks! Your email has been submitted.</p>
+    <hr class="mt-5" />
+    <div class="p-4" style="background-color: #eee">
+      <p><b>Query Run:</b><br /> <span style="font-size: .8rem;">{{ query }}</span></p>
+      <p style="color: red">
+        {{ error }}
+      </p>
+    </div>
+    {% endif %}
+  </main>
+</div>
+{% endblock content %}
