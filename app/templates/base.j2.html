@@ -30,11 +30,11 @@
         <li class="nav-item{% if current_page == "mysql_sqli" %} active{% endif %}">
           <a class="nav-link" href="{{ url_for('mysql_sqli') }}">MySQL SQLi</a>
         </li>
-        <li class="nav-item{% if current_page == "mysql_time" %} active{% endif %}">
-          <a class="nav-link" href="{{ url_for('mysql_time') }}">MySQL Time-based</a>
-        </li>
         <li class="nav-item{% if current_page == "mysql_boolean" %} active{% endif %}">
           <a class="nav-link" href="{{ url_for('mysql_boolean') }}">MySQL Boolean-based</a>
+        </li>
+        <li class="nav-item{% if current_page == "mysql_time" %} active{% endif %}">
+          <a class="nav-link" href="{{ url_for('mysql_time') }}">MySQL Time-based</a>
         </li>
       </ul>
     </div>

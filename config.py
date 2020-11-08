@@ -1,6 +1,5 @@
 import os
 import pymysql
-from pymysql.constants import CLIENT
 
 
 class Config:
@@ -11,6 +10,5 @@ class Config:
         "user": "vagrant",
         "password": "vagrant",
         "db": "python_sqli",
-        "client_flag": CLIENT.MULTI_STATEMENTS,
         "cursorclass": pymysql.cursors.DictCursor,
     }

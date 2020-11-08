@@ -6,39 +6,20 @@ from config import Config
 from app.forms import LoginForm, SearchForm
 
 
-def render_table(
-    form,
-    query,
-    current_page,
-    search_value="",
-    title="",
-    data="",
-    error="",
-    record_count="",
-):
-    return render_template(
-        "table.j2.html",
-        title=title,
-        form=form,
-        data=data,
-        search_value=search_value,
-        query=query,
-        current_page=current_page,
-        error=error,
-        record_count=record_count,
-    )
-
-
 def execute_query(query):
     error = ""
     data = ""
+    db = pymysql.connect(**Config.CONN)
+    cursor = db.cursor()
     try:
-        with pymysql.connect(**Config.CONN) as cursor:
-            cursor.execute(query)
-            data = cursor.fetchall()
+        cursor.execute(query)
+        data = cursor.fetchall()
     except Exception as e:  # noqa
         app.logger.error(e)
-        error = e.args[1]
+        # error = e.args[1]
+        error = e
+    finally:
+        db.close()
     return (data, error)
 
 
@@ -62,19 +43,31 @@ def mysql_sqli():
         )
         data, error = execute_query(query)
         query = query.split("--")[0]
-        return render_table(
-            form,
-            query,
-            "mysql_sqli",
-            search_value=search_value,
+        return render_template(
+            "table.j2.html",
             title="MySQL Union",
+            form=form,
             data=data,
+            search_value=search_value,
+            query=query,
+            current_page="mysql_sqli",
             error=error,
+            record_count=len(data),
         )
     query = "SELECT * FROM MOCK_DATA LIMIT 10;"
     data, error = execute_query(query)
     query = query.split("--")[0]
-    return render_table(form, query, "mysql_sqli", title="MySQL Union", data=data)
+    return render_template(
+        "table.j2.html",
+        title="MySQL Union",
+        form=form,
+        data=data,
+        search_value="",
+        query=query,
+        current_page="mysql_sqli",
+        error=error,
+        record_count=len(data),
+    )
 
 
 @app.route("/mysql/time", methods=["GET", "POST"])

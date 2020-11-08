@@ -6,7 +6,7 @@ After=network.target
 User=ubuntu
 WorkingDirectory=/vagrant/app
 Environment=FLASK_APP=/vagrant/app/sqli.py
-Environment=FLASK_ENV=development
+/* Environment=FLASK_ENV=development */
 ExecStart=/home/vagrant/env/bin/flask run --host=0.0.0.0
 Restart=always
 
