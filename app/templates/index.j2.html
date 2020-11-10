@@ -3,14 +3,14 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<h1>SQL Injection Exploit Practice</h1>
-<h2>MySQL</h2>
+<h1 class="mt-2">SQL Injection Exploit Practice</h1>
+<h2 class="mt-2">MySQL</h2>
 <ul>
-  <li>SQLi: <a href="{{ url_for('mysql_sqli') }}">Here</a></li>
+  <li>Union SQLi: <a href="{{ url_for('mysql_sqli') }}">Here</a></li>
   <li>Time-based: <a href="{{ url_for('mysql_time') }}">Here</a></li>
   <li>Boolean-based: <a href="{{ url_for('mysql_boolean') }}">Here</a></li>
 </ul>
-<h2>PostgreSQL</h2>
+<h2 class="mt-2">PostgreSQL - Not Finished Yet</h2>
 <ul>
   <li>Time-based: <a href="{{ url_for('psql_time') }}">Here</a></li>
   <li>Boolean-based: <a href="{{ url_for('psql_boolean') }}">Here</a></li>
